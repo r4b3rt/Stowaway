@@ -156,8 +156,6 @@ func HandleDataConn(startNodeDataConn net.Conn) {
 			break
 		}
 		switch nodeResp.Datatype {
-		case "SHELLRESP":
-			fmt.Print(nodeResp.Result)
 		case "SSHMESS":
 			fmt.Print(nodeResp.Result)
 			fmt.Print("(ssh mode)>>>")
@@ -325,6 +323,8 @@ func HandleCommandFromControlConn(startNodeControlConn net.Conn) {
 					delete(Nodes, Nodeid)
 				}
 			}
+		case "SHELLRESP":
+			fmt.Print(command.Info)
 		case "SOCKSRESP":
 			switch command.Info {
 			case "SUCCESS":

